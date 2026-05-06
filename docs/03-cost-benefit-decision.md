@@ -1,30 +1,53 @@
 # Architecture Decision Record
 
-## Problem
-Choose best WhatsApp integration balancing robustness and cost.
+## ADR-001: WhatsApp Provider Selection
 
-## Options Evaluated
-- WhatsApp Cloud API
-- WhatsMeow
-- Twilio
-- Zenvia
-- 360Dialog
+## Status
+
+Accepted
+
+## Context
+
+The system requires:
+
+* production reliability
+* predictable maintenance
+* reasonable operational costs
+
+## Alternatives Considered
+
+1. WhatsApp Cloud API
+2. WhatsMeow
+3. Twilio
+4. Zenvia
+5. 360Dialog
 
 ## Decision
-Selected: WhatsApp Cloud API
 
-## Justification
-- Official support
-- Lower operational risk
-- Predictable cost
-- High scalability
-- Future-proof
+Use WhatsApp Cloud API.
 
-## Consequences
-Pros:
-- Reliable integration
-- Easier maintenance
+## Decision Drivers
 
-Cons:
-- Usage pricing
-- Initial setup complexity
+* official provider
+* webhook reliability
+* lower maintenance burden
+* scalability
+* long-term viability
+
+## Tradeoffs
+
+### Positive
+
+* robust integration
+* safer production environment
+* future compatibility
+
+### Negative
+
+* moderate cost
+* onboarding setup
+
+## Final Conclusion
+
+Cloud API provides the best long-term ROI.
+

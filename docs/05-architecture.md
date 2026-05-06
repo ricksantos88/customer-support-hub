@@ -1,36 +1,74 @@
 # Architecture
 
-## Project Structure
+## Architectural Style
+
+* Hexagonal Architecture
+* DDD lite
+* provider abstraction
+
+## Folder Structure
 
 ```text
 cmd/api
 internal/
   domain/
+    contact/
+    conversation/
+    message/
+    agent/
+
   application/
+    send_message/
+    receive_message/
+    assign_conversation/
+
   infrastructure/
+    db/
+    cache/
+    websocket/
+    whatsapp/
+      meta/
+
   interfaces/
+    http/
+    ws/
 ```
 
-## Layers
+## Layer Responsibilities
 
-### Domain
-Business entities.
+## Domain
 
-### Application
-Use cases.
+Contains:
 
-### Infrastructure
-External integrations.
+* entities
+* value objects
+* domain rules
 
-### Interfaces
-HTTP and WebSocket adapters.
+## Application
 
-## Patterns
-- Hexagonal Architecture
-- Repository Pattern
-- Dependency Injection
+Contains:
 
-## Provider Interface
+* use cases
+* orchestration logic
+
+## Infrastructure
+
+Contains:
+
+* postgres
+* redis
+* whatsapp provider
+* websocket manager
+
+## Interfaces
+
+Contains:
+
+* REST handlers
+* middleware
+* DTOs
+
+## Core Interface
 
 ```go
 type MessagingProvider interface {
@@ -38,3 +76,4 @@ type MessagingProvider interface {
     HandleWebhook(payload []byte) error
 }
 ```
+

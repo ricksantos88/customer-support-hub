@@ -1,10 +1,16 @@
 # API Contracts
 
-## Send Message
+## Authentication
+
+JWT Bearer token.
+
+Header:
 
 ```http
-POST /messages/send
+Authorization: Bearer <token>
 ```
+
+## POST /messages/send
 
 Request:
 
@@ -19,24 +25,40 @@ Response:
 
 ```json
 {
-  "status": "sent"
+  "status": "sent",
+  "message_id": "abc"
 }
 ```
 
-## List Conversations
+## GET /conversations
 
-```http
-GET /conversations
+Response:
+
+```json
+[
+  {
+    "id": "1",
+    "status": "open"
+  }
+]
 ```
 
-## Get Messages
+## GET /conversations/:id/messages
 
-```http
-GET /conversations/:id/messages
+Returns conversation history.
+
+## POST /webhooks/whatsapp
+
+Receives inbound webhook.
+
+## GET /health
+
+Response:
+
+```json
+{
+  "status": "ok"
+}
 ```
 
-## Webhook
-
-```http
-POST /webhooks/whatsapp
-```
+---

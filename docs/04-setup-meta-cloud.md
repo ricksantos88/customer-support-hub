@@ -1,35 +1,73 @@
-# Meta Cloud API Setup
+# Meta Cloud API Setup Guide
 
-## Steps
+## Prerequisites
 
-### 1. Create Meta App
-- Access Meta Developers
-- Create business app
+* Meta account
+* Business Manager account
+* WhatsApp Business number
 
-### 2. Configure WhatsApp Product
-- Add WhatsApp product
+## Step 1: Create App
 
-### 3. Configure Webhook
-Webhook URL:
+1. Access Meta Developers
+2. Create Business App
+3. Add WhatsApp product
 
-```text
+## Step 2: Configure Webhook
+
+Endpoint:
+
+```http
 POST /webhooks/whatsapp
 ```
 
-Verify token required.
+Verification endpoint:
 
-### 4. Generate Access Token
-Store securely.
+```http
+GET /webhooks/whatsapp
+```
 
-### 5. Save IDs
-Required:
-- phone_number_id
-- business_account_id
+Validation params:
+
+* hub.mode
+* hub.challenge
+* hub.verify_token
+
+## Step 3: Generate Access Token
+
+Store token securely.
+
+## Step 4: Capture IDs
+
+Required values:
+
+* phone_number_id
+* business_account_id
 
 ## Environment Variables
 
 ```env
-WHATSAPP_TOKEN=
+WHATSAPP_ACCESS_TOKEN=
 WHATSAPP_PHONE_NUMBER_ID=
 WHATSAPP_VERIFY_TOKEN=
+META_APP_SECRET=
 ```
+
+## Send Message Example
+
+```http
+POST https://graph.facebook.com/v22.0/{phone-number-id}/messages
+```
+
+Payload:
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "559199999999",
+  "type": "text",
+  "text": {
+    "body": "Olá"
+  }
+}
+```
+

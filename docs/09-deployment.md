@@ -1,30 +1,20 @@
-# Deployment
+# Deployment Guide
 
-## Infrastructure
-- Docker
-- Docker Compose
-- PostgreSQL
-- Redis
-- Nginx
+## Infrastructure Components
 
-## Services
-- api
-- db
-- redis
+* api
+* postgres
+* redis
+* nginx
 
-## Healthcheck
+## Deployment Strategy
 
-```http
-GET /health
-```
+Use Docker Compose initially.
 
-Response:
+Future:
 
-```json
-{
-  "status": "ok"
-}
-```
+* Kubernetes
+* ECS/EKS
 
 ## Environment Variables
 
@@ -33,10 +23,29 @@ APP_PORT=8080
 DB_URL=
 REDIS_URL=
 JWT_SECRET=
+LOG_LEVEL=info
 ```
 
-## Observability
-- logs
-- metrics
-- health checks
-- alerting
+## Monitoring
+
+* logs
+* metrics
+* tracing
+
+Tools:
+
+* Prometheus
+* Grafana
+
+## Healthchecks
+
+```http
+GET /health
+```
+
+## Security
+
+* HTTPS
+* secrets management
+* token rotation
+* rate l

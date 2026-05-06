@@ -2,42 +2,42 @@
 
 ## contacts
 
-```sql
-CREATE TABLE contacts (
-  id UUID PRIMARY KEY,
-  phone VARCHAR(20) UNIQUE,
-  name VARCHAR(255),
-  created_at TIMESTAMP
-);
-```
+Stores customer records.
 
 ## conversations
 
-```sql
-CREATE TABLE conversations (
-  id UUID PRIMARY KEY,
-  contact_id UUID REFERENCES contacts(id),
-  status VARCHAR(20),
-  assigned_agent_id UUID,
-  last_message_at TIMESTAMP
-);
-```
+Stores support sessions.
+
+Statuses:
+
+* open
+* pending
+* closed
 
 ## messages
 
-```sql
-CREATE TABLE messages (
-  id UUID PRIMARY KEY,
-  conversation_id UUID REFERENCES conversations(id),
-  direction VARCHAR(20),
-  content TEXT,
-  external_id VARCHAR(255),
-  status VARCHAR(20),
-  created_at TIMESTAMP
-);
-```
+Stores inbound/outbound messages.
 
-Indexes:
-- conversation_id
-- phone
-- created_at
+Directions:
+
+* inbound
+* outbound
+
+## agents
+
+Stores support agents.
+
+Suggested schema includes:
+
+* UUID primary keys
+* timestamps
+* indexes
+* foreign keys
+
+Recommended indexes:
+
+* phone
+* conversation_id
+* assigned_agent_id
+* created_at
+

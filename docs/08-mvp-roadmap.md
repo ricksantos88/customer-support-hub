@@ -1,20 +1,37 @@
 # MVP Roadmap
 
-## Phase 1
-- Setup project
-- Meta integration
-- Webhook receive
-- Send messages
+## Sprint 1
 
-## Phase 2
-- Database persistence
-- Conversation management
-- Contact management
+* project bootstrap
+* database
+* docker setup
+* config management
 
-## Phase 3
-- WebSocket real-time updates
-- Agent auth
+## Sprint 2
 
-## Phase 4
-- Docker deploy
-- Monitoring
+* meta integration
+* webhook validation
+* receive messages
+
+## Sprint 3
+
+* send messages
+* persistence
+* contact creation
+
+## Sprint 4
+
+* websocket
+* conversation listing
+* agent auth
+
+## Sprint 5
+
+* observability
+* deployment
+* hardening
+
+Deliverable:
+Production-ready MVP.
+
+---
