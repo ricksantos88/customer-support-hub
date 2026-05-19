@@ -13,7 +13,7 @@ CREATE TABLE agents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    jwt_hash TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     last_active TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -64,11 +64,11 @@ COMMENT ON COLUMN contacts.created_at IS 'Creation timestamp';
 COMMENT ON COLUMN contacts.updated_at IS 'Last update timestamp';
 COMMENT ON COLUMN contacts.deleted_at IS 'Soft delete timestamp';
 
-COMMENT ON TABLE agents IS 'Support agents authenticated via JWT';
+COMMENT ON TABLE agents IS 'Support agents (internal users)';
 COMMENT ON COLUMN agents.id IS 'Agent identifier';
 COMMENT ON COLUMN agents.name IS 'Agent name';
 COMMENT ON COLUMN agents.email IS 'Agent email (unique)';
-COMMENT ON COLUMN agents.jwt_hash IS 'Bcrypt hash of JWT secret';
+COMMENT ON COLUMN agents.password_hash IS 'Bcrypt hash da credencial do agente';
 COMMENT ON COLUMN agents.created_at IS 'Creation timestamp';
 COMMENT ON COLUMN agents.last_active IS 'Last activity timestamp';
 
@@ -87,4 +87,3 @@ COMMENT ON COLUMN messages.content IS 'Text content';
 COMMENT ON COLUMN messages.direction IS 'Direction: inbound or outbound';
 COMMENT ON COLUMN messages.sender_id IS 'Sender identifier (contact or agent)';
 COMMENT ON COLUMN messages.created_at IS 'Creation timestamp';
-

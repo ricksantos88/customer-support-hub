@@ -33,12 +33,12 @@ func seed(db *gorm.DB) error {
 		return fmt.Errorf("auto migrate: %w", err)
 	}
 
-	agentOne, err := upsertAgent(db, "Alice Silva", "alice@example.com", "alice-jwt-secret")
+	agentOne, err := upsertAgent(db, "Alice Silva", "alice@example.com", "alice-password")
 	if err != nil {
 		return err
 	}
 
-	agentTwo, err := upsertAgent(db, "Bruno Costa", "bruno@example.com", "bruno-jwt-secret")
+	agentTwo, err := upsertAgent(db, "Bruno Costa", "bruno@example.com", "bruno-password")
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func seed(db *gorm.DB) error {
 	return nil
 }
 
-func upsertAgent(db *gorm.DB, name, email, jwtSecret string) (*models.Agent, error) {
+func upsertAgent(db *gorm.DB, name, email, password string) (*models.Agent, error) {
 	agent := models.Agent{}
 	result := db.Where("email = ?", strings.ToLower(email)).First(&agent)
 	if result.Error == nil {
@@ -89,7 +89,7 @@ func upsertAgent(db *gorm.DB, name, email, jwtSecret string) (*models.Agent, err
 		return nil, fmt.Errorf("find agent: %w", result.Error)
 	}
 
-	agent = models.Agent{Name: name, Email: email, JWTSecret: jwtSecret}
+	agent = models.Agent{Name: name, Email: email, Password: password}
 	if err := db.Create(&agent).Error; err != nil {
 		return nil, fmt.Errorf("create agent: %w", err)
 	}

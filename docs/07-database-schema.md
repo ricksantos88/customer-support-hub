@@ -25,7 +25,7 @@ Columns:
 - `id` UUID PK
 - `name`
 - `email` (unique)
-- `jwt_hash` (bcrypt hash of JWT secret)
+- `password_hash` (bcrypt hash of agent credential)
 - `created_at`
 - `last_active`
 
