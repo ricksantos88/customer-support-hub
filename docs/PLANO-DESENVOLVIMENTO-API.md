@@ -43,27 +43,27 @@
 #### 2.1.1 Tasks
 
 **Task 1.1: Inicializar Projeto Go**
-- [ ] Criar estrutura base do projeto
-- [ ] Configurar `go.mod` com dependências: Fiber, GORM, Redis, JWT
-- [ ] Definir folder structure conforme arquitetura
-- [ ] Criar `.gitignore` e `Makefile` para comandos comuns
+- [x] Criar estrutura base do projeto
+- [x] Configurar `go.mod` com dependências: Fiber, GORM, Redis, JWT
+- [x] Definir folder structure conforme arquitetura
+- [x] Criar `.gitignore` e `Makefile` para comandos comuns
 
 **Task 1.2: Configuração de Ambiente**
-- [ ] Criar arquivo `.env.example` com todas as variáveis necessárias
-- [ ] Implementar config management (viper ou similar)
-- [ ] Setup de logging estruturado (slog ou zap)
-- [ ] Configurar variáveis para dev/test/prod
+- [x] Criar arquivo `.env.example` com todas as variáveis necessárias
+- [x] Implementar config management (viper ou similar)
+- [x] Setup de logging estruturado (slog ou zap)
+- [x] Configurar variáveis para dev/test/prod
 
 **Task 1.3: Docker e Docker Compose**
-- [ ] Criar Dockerfile para aplicação Go
-- [ ] Criar docker-compose.yml com: API, PostgreSQL, Redis
-- [ ] Configurar volumes para dados persistentes
-- [ ] Testar local com docker-compose up
+- [x] Criar Dockerfile para aplicação Go
+- [x] Criar docker-compose.yml com: API, PostgreSQL, Redis
+- [x] Configurar volumes para dados persistentes
+- [x] Testar local com docker-compose up
 
 **Task 1.4: CI/CD Básico**
-- [ ] Configurar GitHub Actions (lint, test, build)
-- [ ] Setup de secrets no CI
-- [ ] Build de imagem Docker no pipeline
+- [x] Configurar GitHub Actions (lint, test, build)
+- [x] Setup de secrets no CI
+- [x] Build de imagem Docker no pipeline
 
 ---
 
