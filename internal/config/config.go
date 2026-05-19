@@ -37,7 +37,7 @@ func Load() (*Config, error) {
 	v.SetDefault("DB_HOST", "localhost")
 	v.SetDefault("DB_PORT", "5432")
 	v.SetDefault("DB_USER", "support")
-	v.SetDefault("DB_PASSWORD", "support123")
+	v.SetDefault("DB_PASSWORD", "support123") //TODO: change me in the future
 	v.SetDefault("DB_NAME", "customer_support")
 	v.SetDefault("DB_SSL_MODE", "disable")
 	v.SetDefault("REDIS_HOST", "localhost")
