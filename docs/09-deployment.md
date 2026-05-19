@@ -5,7 +5,6 @@
 * api
 * postgres
 * redis
-* nginx
 
 ## Deployment Strategy
 

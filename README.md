@@ -37,8 +37,6 @@ Serviços da fase 1:
 - `api`
 - `postgres`
 - `redis`
-- `nginx`
-
 Para parar:
 
 ```bash
