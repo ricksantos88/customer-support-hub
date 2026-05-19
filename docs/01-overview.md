@@ -60,7 +60,8 @@ The platform must allow customer service teams to communicate with end users thr
 
 * Docker
 * Docker Compose
-* Nginx
+
+
 
 ### Integration
 

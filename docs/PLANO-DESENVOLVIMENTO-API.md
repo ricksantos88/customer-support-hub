@@ -17,7 +17,7 @@
 ### 1.2 Stack Técnico
 - **Backend:** Go 1.24+, Fiber
 - **Banco:** PostgreSQL (persistência) + Redis (cache/sessões)
-- **Infra:** Docker, Docker Compose, Nginx
+- **Infra:** Docker, Docker Compose
 - **Integração:** WhatsApp Cloud API (Meta)
 - **Comunicação:** WebSocket (tempo real)
 
@@ -56,7 +56,7 @@
 
 **Task 1.3: Docker e Docker Compose**
 - [ ] Criar Dockerfile para aplicação Go
-- [ ] Criar docker-compose.yml com: API, PostgreSQL, Redis, Nginx
+- [ ] Criar docker-compose.yml com: API, PostgreSQL, Redis
 - [ ] Configurar volumes para dados persistentes
 - [ ] Testar local com docker-compose up
 
