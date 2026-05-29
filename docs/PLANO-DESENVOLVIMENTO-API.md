@@ -73,29 +73,29 @@
 #### 2.2.1 Tasks
 
 **Task 2.1: Design do Schema PostgreSQL**
-- [ ] Definir tabela `contacts` com campos: id (UUID), phone, name, created_at, updated_at, deleted_at
-- [ ] Definir tabela `conversations` com: id, contact_id, status (open/pending/closed), assigned_agent_id, created_at, updated_at
-- [ ] Definir tabela `messages` com: id, conversation_id, content, direction (inbound/outbound), sender_id, created_at
-- [ ] Definir tabela `agents` com: id, name, email, jwt_secret, created_at, last_active
-- [ ] Criar índices em: phone, conversation_id, assigned_agent_id, created_at
+- [x] Definir tabela `contacts` com campos: id (UUID), phone, name, created_at, updated_at, deleted_at
+- [x] Definir tabela `conversations` com: id, contact_id, status (open/pending/closed), assigned_agent_id, created_at, updated_at
+- [x] Definir tabela `messages` com: id, conversation_id, content, direction (inbound/outbound), sender_id, created_at
+- [x] Definir tabela `agents` com: id, name, email, jwt_secret, created_at, last_active
+- [x] Criar índices em: phone, conversation_id, assigned_agent_id, created_at
 
 **Task 2.2: Migrations**
-- [ ] Usar biblioteca de migrations (golang-migrate ou similar)
-- [ ] Criar migration para v1 com todas as tabelas
-- [ ] Documentar comando para rodar migrations
-- [ ] Testar rollback
+- [x] Usar biblioteca de migrations (golang-migrate ou similar)
+- [x] Criar migration para v1 com todas as tabelas
+- [x] Documentar comando para rodar migrations
+- [x] Testar rollback
 
 **Task 2.3: Modelos GORM**
-- [ ] Criar structs Go para: Contact, Conversation, Message, Agent
-- [ ] Implementar hooks GORM (BeforeCreate, BeforeSave)
-- [ ] Definir relacionamentos (foreign keys, belongs to, has many)
-- [ ] Adicionar validações básicas
+- [x] Criar structs Go para: Contact, Conversation, Message, Agent
+- [x] Implementar hooks GORM (BeforeCreate, BeforeSave)
+- [x] Definir relacionamentos (foreign keys, belongs to, has many)
+- [x] Adicionar validações básicas
 
 **Task 2.4: Repositório Pattern**
-- [ ] Criar interfaces de repositório para cada entidade
-- [ ] Implementar PostgreSQL repositories
-- [ ] Implementar mock repositories para testes
-- [ ] Testar operações CRUD
+- [x] Criar interfaces de repositório para cada entidade
+- [x] Implementar PostgreSQL repositories
+- [x] Implementar mock repositories para testes
+- [x] Testar operações CRUD
 
 ---
 
