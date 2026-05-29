@@ -24,7 +24,7 @@ tidy:
 	go mod tidy
 
 docker-up:
-	docker compose up --build -d
+	docker compose up --build -d --wait
 
 docker-down:
 	docker compose down

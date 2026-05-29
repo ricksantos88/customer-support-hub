@@ -21,13 +21,8 @@ func NewConversationRepository(db *gorm.DB) repositories.ConversationRepository 
 }
 
 func (r *ConversationRepository) Create(ctx context.Context, conversation *models.Conversation) error {
-	if err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(conversation).Error; err != nil {
-			return fmt.Errorf("create conversation: %w", err)
-		}
-		return nil
-	}); err != nil {
-		return err
+	if err := r.db.WithContext(ctx).Create(conversation).Error; err != nil {
+		return fmt.Errorf("create conversation: %w", err)
 	}
 	return nil
 }

@@ -29,10 +29,6 @@ func main() {
 }
 
 func seed(db *gorm.DB) error {
-	if err := db.AutoMigrate(&models.Contact{}, &models.Agent{}, &models.Conversation{}, &models.Message{}); err != nil {
-		return fmt.Errorf("auto migrate: %w", err)
-	}
-
 	agentOne, err := upsertAgent(db, "Alice Silva", "alice@example.com", "alice-password")
 	if err != nil {
 		return err
@@ -133,7 +129,19 @@ func upsertConversation(db *gorm.DB, contactID, agentID uuid.UUID, status string
 
 func upsertMessage(db *gorm.DB, conversationID, senderID uuid.UUID, direction, content string) error {
 	var message models.Message
-	result := db.Where("conversation_id = ? AND sender_id = ? AND direction = ? AND content = ?", conversationID, senderID, direction, content).First(&message)
+	direction = strings.ToLower(strings.TrimSpace(direction))
+
+	query := db.Where("conversation_id = ? AND direction = ? AND content = ?", conversationID, direction, content)
+	switch direction {
+	case models.MessageDirectionInbound:
+		query = query.Where("sender_contact_id = ?", senderID)
+	case models.MessageDirectionOutbound:
+		query = query.Where("sender_agent_id = ?", senderID)
+	default:
+		return fmt.Errorf("invalid message direction: %s", direction)
+	}
+
+	result := query.First(&message)
 	if result.Error == nil {
 		return nil
 	}
@@ -141,11 +149,12 @@ func upsertMessage(db *gorm.DB, conversationID, senderID uuid.UUID, direction, c
 		return fmt.Errorf("find message: %w", result.Error)
 	}
 
-	message = models.Message{
-		ConversationID: conversationID,
-		SenderID:       senderID,
-		Direction:      direction,
-		Content:        content,
+	message = models.Message{ConversationID: conversationID, Direction: direction, Content: content}
+	switch direction {
+	case models.MessageDirectionInbound:
+		message.SenderContactID = &senderID
+	case models.MessageDirectionOutbound:
+		message.SenderAgentID = &senderID
 	}
 	if err := db.Create(&message).Error; err != nil {
 		return fmt.Errorf("create message: %w", err)

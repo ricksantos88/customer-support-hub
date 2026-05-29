@@ -24,23 +24,18 @@ type Agent struct {
 	Conversations []Conversation `gorm:"foreignKey:AssignedAgentID"`
 }
 
-func (a *Agent) BeforeCreate(_ *gorm.DB) error {
-	if a.ID == uuid.Nil {
-		a.ID = uuid.New()
-	}
-
-	if strings.TrimSpace(a.Name) == "" {
-		return fmt.Errorf("agent name is required")
-	}
-
-	parsed, err := mail.ParseAddress(strings.TrimSpace(a.Email))
-	if err != nil || parsed.Address == "" {
-		return fmt.Errorf("invalid email address")
-	}
-	a.Email = strings.ToLower(strings.TrimSpace(parsed.Address))
-
-	if strings.TrimSpace(a.Password) == "" && strings.TrimSpace(a.PasswordHash) == "" {
-		return fmt.Errorf("password is required")
+// BeforeSave runs for both create and update. We use it to:
+// - normalize email (when present)
+// - hash plaintext Password into PasswordHash (when provided)
+//
+// Note: the JWT signing secret should live in env/config (e.g. JWT_SECRET), not in the DB.
+func (a *Agent) BeforeSave(_ *gorm.DB) error {
+	if strings.TrimSpace(a.Email) != "" {
+		parsed, err := mail.ParseAddress(strings.TrimSpace(a.Email))
+		if err != nil || parsed.Address == "" {
+			return fmt.Errorf("invalid email address")
+		}
+		a.Email = strings.ToLower(strings.TrimSpace(parsed.Address))
 	}
 
 	if strings.TrimSpace(a.Password) != "" {
@@ -52,8 +47,25 @@ func (a *Agent) BeforeCreate(_ *gorm.DB) error {
 		a.Password = ""
 	}
 
+	return nil
+}
+
+func (a *Agent) BeforeCreate(_ *gorm.DB) error {
+	if a.ID == uuid.Nil {
+		a.ID = uuid.New()
+	}
+
+	if strings.TrimSpace(a.Name) == "" {
+		return fmt.Errorf("agent name is required")
+	}
+
+	if strings.TrimSpace(a.Email) == "" {
+		return fmt.Errorf("email is required")
+	}
+
+	// If no plaintext Password was provided, PasswordHash must already be set.
 	if strings.TrimSpace(a.PasswordHash) == "" {
-		return fmt.Errorf("password hash is required")
+		return fmt.Errorf("password is required")
 	}
 
 	return nil

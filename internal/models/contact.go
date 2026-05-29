@@ -28,6 +28,11 @@ func (c *Contact) BeforeCreate(_ *gorm.DB) error {
 		c.ID = uuid.New()
 	}
 
+	return c.validateFields()
+}
+
+func (c *Contact) validateFields() error {
+
 	c.Phone = strings.TrimSpace(c.Phone)
 	if !phoneE164Regex.MatchString(c.Phone) {
 		return fmt.Errorf("invalid phone format: must be E.164 with + and digits only, min 8 chars")
@@ -40,11 +45,6 @@ func (c *Contact) BeforeCreate(_ *gorm.DB) error {
 	return nil
 }
 
-func (c *Contact) BeforeUpdate(tx *gorm.DB) error {
-	tx.Statement.SetColumn("UpdatedAt", time.Now().UTC())
-	return nil
-}
-
 func (c *Contact) Validate(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
@@ -52,13 +52,5 @@ func (c *Contact) Validate(ctx context.Context) error {
 	default:
 	}
 
-	if !phoneE164Regex.MatchString(strings.TrimSpace(c.Phone)) {
-		return fmt.Errorf("invalid phone format: must be E.164 with + and digits only, min 8 chars")
-	}
-
-	if strings.TrimSpace(c.Name) == "" {
-		return fmt.Errorf("contact name is required")
-	}
-
-	return nil
+	return c.validateFields()
 }

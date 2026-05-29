@@ -17,7 +17,7 @@ import (
 	postgresrepo "github.com/ricksantos88/customer-support-hub/internal/repositories/postgres"
 )
 
-func TestCreate(t *testing.T) {
+func TestContactRepository_Create(t *testing.T) {
 	db, terminate := setupTestDB(t)
 	defer terminate()
 
@@ -29,7 +29,7 @@ func TestCreate(t *testing.T) {
 	require.NotEqual(t, "", contact.ID.String())
 }
 
-func TestGetByPhone(t *testing.T) {
+func TestContactRepository_GetByPhone(t *testing.T) {
 	db, terminate := setupTestDB(t)
 	defer terminate()
 
@@ -45,7 +45,7 @@ func TestGetByPhone(t *testing.T) {
 	require.Equal(t, contact.Name, found.Name)
 }
 
-func TestSoftDelete(t *testing.T) {
+func TestContactRepository_SoftDelete(t *testing.T) {
 	db, terminate := setupTestDB(t)
 	defer terminate()
 
