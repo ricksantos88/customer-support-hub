@@ -1,43 +1,68 @@
 # Database Schema
 
+This schema is defined in `migrations/001_initial_schema.up.sql`.
+
 ## contacts
 
 Stores customer records.
 
-## conversations
+Columns:
+- `id` UUID PK
+- `phone` (E.164, unique when not soft-deleted)
+- `name`
+- `created_at`
+- `updated_at`
+- `deleted_at` (soft delete)
 
-Stores support sessions.
-
-Statuses:
-
-* open
-* pending
-* closed
-
-## messages
-
-Stores inbound/outbound messages.
-
-Directions:
-
-* inbound
-* outbound
+Indexes:
+- `idx_contacts_phone_active_unique` on `phone` where `deleted_at IS NULL`
 
 ## agents
 
 Stores support agents.
 
-Suggested schema includes:
+Columns:
+- `id` UUID PK
+- `name`
+- `email` (unique)
+- `password_hash` (bcrypt hash of agent credential)
+- `created_at`
+- `last_active`
 
-* UUID primary keys
-* timestamps
-* indexes
-* foreign keys
+## conversations
 
-Recommended indexes:
+Stores support sessions.
 
-* phone
-* conversation_id
-* assigned_agent_id
-* created_at
+Columns:
+- `id` UUID PK
+- `contact_id` (FK -> `contacts.id`)
+- `assigned_agent_id` (FK -> `agents.id`, nullable)
+- `status` (`open` | `pending` | `closed`)
+- `created_at`
+- `updated_at`
 
+Constraints:
+- `status` must be `open`, `pending`, or `closed`
+- FKs use `ON DELETE RESTRICT`
+
+Indexes:
+- `idx_conversations_assigned_agent_status` on (`assigned_agent_id`, `status`)
+
+## messages
+
+Stores inbound/outbound messages.
+
+Columns:
+- `id` UUID PK
+- `conversation_id` (FK -> `conversations.id`)
+- `content` (TEXT)
+- `direction` (`inbound` | `outbound`)
+- `sender_id` (polymorphic: contact or agent)
+- `created_at`
+
+Constraints:
+- `direction` must be `inbound` or `outbound`
+- FKs use `ON DELETE RESTRICT`
+
+Indexes:
+- `idx_messages_conversation_created_at` on (`conversation_id`, `created_at`)

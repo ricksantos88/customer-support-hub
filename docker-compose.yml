@@ -12,7 +12,7 @@ services:
   #     - redis
 
   postgres:
-    image: postgres:17-alpine
+    image: postgres:15-alpine
     environment:
       POSTGRES_DB: ${DB_NAME:-customer_support}
       POSTGRES_USER: ${DB_USER:-support}
@@ -21,6 +21,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-support} -d ${DB_NAME:-customer_support}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
 
   redis:
     image: redis:8-alpine
@@ -29,6 +36,7 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:
