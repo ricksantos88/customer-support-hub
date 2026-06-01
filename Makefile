@@ -8,7 +8,7 @@ setup:
 	go mod tidy
 
 dev: migrate-up
-	go run ./cmd/api
+	DB_HOST=localhost DB_PORT=5432 go run ./cmd/api
 
 build:
 	go build -o bin/$(APP_NAME) ./cmd/api

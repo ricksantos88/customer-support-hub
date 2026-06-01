@@ -100,34 +100,41 @@
 ---
 
 ### FASE 3: AUTENTICAÇÃO E SEGURANÇA (Sprint 2)
-**Duração:** 1 semana | **Entregáveis:** JWT setup, middleware de auth, secrets management
+**Duração:** 1 semana | **Entregáveis:** JWT setup, middleware de auth, secrets management, sessões persistidas com fallback
 
 #### 2.3.1 Tasks
 
 **Task 3.1: JWT Implementation**
-- [ ] Gerar JWT_SECRET securo
-- [ ] Implementar geração de tokens para agents
-- [ ] Implementar validação de tokens
-- [ ] Adicionar refresh token logic
-- [ ] Definir TTL para tokens (ex: 24h)
+- [x] Gerar JWT_SECRET seguro via env/config
+- [x] Implementar geração de tokens para agents
+- [x] Implementar validação de tokens
+- [x] Adicionar refresh token logic
+- [x] Definir TTL para tokens e refresh com rotação
 
 **Task 3.2: Middleware de Autenticação**
-- [ ] Criar middleware para validar Bearer tokens
-- [ ] Implementar middleware para extrair agent_id do token
+- [x] Criar middleware para validar Bearer tokens
+- [x] Implementar middleware para extrair agent_id do token
 - [ ] Criar middleware de autorização baseada em roles (se necessário)
-- [ ] Testar com requisições mock
+- [x] Testar com requisições mock
 
 **Task 3.3: Secrets Management**
-- [ ] Configurar suporte a .env (dotenv)
-- [ ] Documentar processo de geração de secrets
-- [ ] Implementar validação de secrets obrigatórios
-- [ ] Setup de secrets no Docker Compose
+- [x] Configurar suporte a .env (dotenv)
+- [x] Documentar processo de geração de secrets
+- [x] Implementar validação de secrets obrigatórios
+- [x] Setup de secrets no Docker Compose
 
 **Task 3.4: Rate Limiting e Proteção**
 - [ ] Implementar rate limiting por IP
 - [ ] Implementar rate limiting por agent (JWT claims)
 - [ ] Configurar CORS apropriadamente
-- [ ] Adicionar validação de input
+- [x] Adicionar validação de input
+
+**Task 3.5: Sessões e Resiliência**
+- [x] Persistir sessões em PostgreSQL como fonte de verdade
+- [x] Usar Redis apenas como cache/fallback não bloqueante
+- [x] Rotacionar refresh token por sessão
+- [x] Revogar sessão no logout
+- [x] Garantir que a indisponibilidade do Redis não derrube login/refresh/logout
 
 ---
 

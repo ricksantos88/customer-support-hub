@@ -12,6 +12,7 @@ The platform must allow customer service teams to communicate with end users thr
 * Enable multiple agents to manage conversations
 * Persist all message history
 * Support real-time customer service operations
+* Support agent authentication and session control
 * Allow future omnichannel expansion
 
 ## MVP Scope
@@ -26,6 +27,7 @@ The platform must allow customer service teams to communicate with end users thr
 * WebSocket real-time updates
 * Agent authentication
 * Healthcheck endpoints
+* Session refresh and revocation
 
 ### Out of Scope (future)
 
@@ -43,6 +45,7 @@ The platform must allow customer service teams to communicate with end users thr
 * High availability
 * Secure secret management
 * Structured logs
+* Auth continues when Redis cache is unavailable
 
 ## Tech Stack
 
