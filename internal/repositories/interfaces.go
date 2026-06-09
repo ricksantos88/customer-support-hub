@@ -2,10 +2,28 @@ package repositories
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/ricksantos88/customer-support-hub/internal/models"
 )
+
+type AgentRepository interface {
+	Create(ctx context.Context, agent *models.Agent) error
+	GetByID(ctx context.Context, id uuid.UUID) (*models.Agent, error)
+	GetByEmail(ctx context.Context, email string) (*models.Agent, error)
+	Update(ctx context.Context, agent *models.Agent) error
+	UpdateLastActive(ctx context.Context, agentID uuid.UUID, lastActive time.Time) error
+}
+
+type SessionRepository interface {
+	Create(ctx context.Context, session *models.Session) error
+	GetByID(ctx context.Context, id uuid.UUID) (*models.Session, error)
+	GetByRefreshTokenHash(ctx context.Context, refreshTokenHash string) (*models.Session, error)
+	GetActiveByID(ctx context.Context, id uuid.UUID) (*models.Session, error)
+	RotateRefreshToken(ctx context.Context, sessionID uuid.UUID, refreshTokenHash string, lastUsedAt, expiresAt time.Time) error
+	Revoke(ctx context.Context, sessionID uuid.UUID, revokedAt time.Time) error
+}
 
 type ContactRepository interface {
 	Create(ctx context.Context, contact *models.Contact) error

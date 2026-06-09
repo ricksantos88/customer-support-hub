@@ -28,6 +28,7 @@ func NewPostgresConnection(dsn string) (*gorm.DB, error) {
 		if err := db.AutoMigrate(
 			&models.Contact{},
 			&models.Agent{},
+			&models.Session{},
 			&models.Conversation{},
 			&models.Message{},
 		); err != nil {

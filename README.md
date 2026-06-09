@@ -22,21 +22,24 @@ Backend API em Go para suporte ao atendimento via WhatsApp.
 ## Executar localmente
 
 ```bash
+make migrate-up
 make dev
 ```
 
 API disponível em `http://localhost:8080` e health check em `GET /health`.
 
-## Docker Compose
+Esse fluxo usa `DB_HOST=localhost` e exige que o PostgreSQL esteja acessível na porta `5432`.
+
+## Executar com Docker
 
 ```bash
 make docker-up
+make migrate-up
+make dev-docker
 ```
 
-Serviços da fase 1:
-- `api`
-- `postgres`
-- `redis`
+Esse fluxo usa os serviços `api`, `postgres` e `redis` definidos no `docker-compose.yml`.
+
 Para parar:
 
 ```bash
