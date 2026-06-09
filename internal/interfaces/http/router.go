@@ -14,11 +14,11 @@ import (
 )
 
 type RouterDependencies struct {
-	AuthHandler         *handlers.AuthHandler
-	AuthMiddleware      fiber.Handler
-	IPRateLimiter       fiber.Handler
-	AgentRateLimiter    fiber.Handler
-	CORSAllowedOrigins  string
+	AuthHandler        *handlers.AuthHandler
+	AuthMiddleware     fiber.Handler
+	IPRateLimiter      fiber.Handler
+	AgentRateLimiter   fiber.Handler
+	CORSAllowedOrigins string
 }
 
 func NewRouter(deps RouterDependencies) *fiber.App {
