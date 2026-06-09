@@ -1,9 +1,9 @@
 # Plano Detalhado de Desenvolvimento e Documentação
 ## Customer Support Hub - WhatsApp API
 
-**Data:** 15 de maio de 2026  
-**Status:** Em planejamento  
-**Versão:** 1.0
+**Data:** 15 de maio de 2026 | **Última atualização:** 08 de junho de 2026  
+**Status:** Em desenvolvimento (Fase 3 concluída)  
+**Versão:** 1.1
 
 ---
 
@@ -114,7 +114,7 @@
 **Task 3.2: Middleware de Autenticação**
 - [x] Criar middleware para validar Bearer tokens
 - [x] Implementar middleware para extrair agent_id do token
-- [ ] Criar middleware de autorização baseada em roles (se necessário)
+- [x] Criar middleware de autorização baseada em roles (se necessário)
 - [x] Testar com requisições mock
 
 **Task 3.3: Secrets Management**
@@ -124,9 +124,9 @@
 - [x] Setup de secrets no Docker Compose
 
 **Task 3.4: Rate Limiting e Proteção**
-- [ ] Implementar rate limiting por IP
-- [ ] Implementar rate limiting por agent (JWT claims)
-- [ ] Configurar CORS apropriadamente
+- [x] Implementar rate limiting por IP
+- [x] Implementar rate limiting por agent (JWT claims)
+- [x] Configurar CORS apropriadamente
 - [x] Adicionar validação de input
 
 **Task 3.5: Sessões e Resiliência**
@@ -531,10 +531,14 @@ docs/
 - [ ] Schema documentado
 
 ### Fase 3: Auth ✓
-- [ ] JWT sendo gerado e validado
-- [ ] Middleware protegendo endpoints
-- [ ] Secrets seguros no .env
-- [ ] Testes de auth passando
+- [x] JWT sendo gerado e validado
+- [x] Middleware protegendo endpoints
+- [x] Rate limiting por IP e por agent ativo
+- [x] CORS configurado via env `CORS_ALLOWED_ORIGINS`
+- [x] Role-based authorization (`admin`/`agent`) com claim no JWT
+- [x] Migration `004_agent_roles` aplicada
+- [x] Secrets seguros no .env
+- [x] Testes de auth passando
 
 ### Fase 4: WhatsApp Setup ✓
 - [ ] Meta App criado e configurado

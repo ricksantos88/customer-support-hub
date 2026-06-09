@@ -221,6 +221,7 @@ func (s *Service) generateAccessToken(agent *models.Agent, sessionID uuid.UUID, 
 	claims := jwt.MapClaims{
 		"agent_id":   agent.ID.String(),
 		"session_id": sessionID.String(),
+		"agent_role": agent.Role,
 		"token_type": TokenTypeAccess,
 		"iss":        s.issuer,
 		"sub":        agent.ID.String(),

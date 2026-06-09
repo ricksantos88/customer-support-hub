@@ -28,6 +28,8 @@ type Config struct {
 	AuthSessionTTLHours       int
 	AuthCacheTTLMinutes       int
 	AuthRateLimitPerMinute    int
+
+	CORSAllowedOrigins string
 }
 
 func Load() (*Config, error) {
@@ -55,6 +57,7 @@ func Load() (*Config, error) {
 	v.SetDefault("AUTH_SESSION_TTL_HOURS", 24)
 	v.SetDefault("AUTH_CACHE_TTL_MINUTES", 30)
 	v.SetDefault("AUTH_RATE_LIMIT_PER_MINUTE", 60)
+	v.SetDefault("CORS_ALLOWED_ORIGINS", "*")
 
 	environment := os.Getenv("APP_ENV")
 	if environment == "" {
@@ -92,6 +95,7 @@ func Load() (*Config, error) {
 		AuthSessionTTLHours:       v.GetInt("AUTH_SESSION_TTL_HOURS"),
 		AuthCacheTTLMinutes:       v.GetInt("AUTH_CACHE_TTL_MINUTES"),
 		AuthRateLimitPerMinute:    v.GetInt("AUTH_RATE_LIMIT_PER_MINUTE"),
+		CORSAllowedOrigins:        v.GetString("CORS_ALLOWED_ORIGINS"),
 	}
 
 	if cfg.JWTSecret == "" {

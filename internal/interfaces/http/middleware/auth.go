@@ -74,8 +74,11 @@ func (m *BearerAuthMiddleware) Handle(c fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "session does not belong to agent"})
 	}
 
+	agentRole, _ := claims["agent_role"].(string)
+
 	c.Locals("agent_id", agentID.String())
 	c.Locals("session_id", sessionID.String())
+	c.Locals("agent_role", agentRole)
 	c.Locals("session", session)
 	return c.Next()
 }

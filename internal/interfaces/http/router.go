@@ -1,21 +1,39 @@
 package http
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/adaptor"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/ricksantos88/swaggor"
 
 	"github.com/ricksantos88/customer-support-hub/internal/interfaces/dto"
 	handlers "github.com/ricksantos88/customer-support-hub/internal/interfaces/http/handlers"
+	"github.com/ricksantos88/customer-support-hub/internal/interfaces/http/middleware"
 )
 
 type RouterDependencies struct {
-	AuthHandler    *handlers.AuthHandler
-	AuthMiddleware fiber.Handler
+	AuthHandler         *handlers.AuthHandler
+	AuthMiddleware      fiber.Handler
+	IPRateLimiter       fiber.Handler
+	AgentRateLimiter    fiber.Handler
+	CORSAllowedOrigins  string
 }
 
 func NewRouter(deps RouterDependencies) *fiber.App {
 	app := fiber.New()
+
+	allowedOrigins := deps.CORSAllowedOrigins
+	if strings.TrimSpace(allowedOrigins) == "" {
+		allowedOrigins = "*"
+	}
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:  strings.Split(allowedOrigins, ","),
+		AllowMethods:  []string{fiber.MethodGet, fiber.MethodPost, fiber.MethodPut, fiber.MethodDelete, fiber.MethodOptions},
+		AllowHeaders:  []string{"Authorization", "Content-Type", "Accept"},
+		ExposeHeaders: []string{"Retry-After"},
+	}))
 
 	app.Use(func(c fiber.Ctx) error {
 		c.Set("X-Content-Type-Options", "nosniff")
@@ -23,6 +41,10 @@ func NewRouter(deps RouterDependencies) *fiber.App {
 		c.Set("X-XSS-Protection", "1; mode=block")
 		return c.Next()
 	})
+
+	if deps.IPRateLimiter != nil {
+		app.Use(deps.IPRateLimiter)
+	}
 
 	setupSwagger(app)
 
@@ -34,6 +56,9 @@ func NewRouter(deps RouterDependencies) *fiber.App {
 	auth.Post("/login", deps.AuthHandler.Login)
 	auth.Post("/refresh", deps.AuthHandler.Refresh)
 	auth.Use(deps.AuthMiddleware)
+	if deps.AgentRateLimiter != nil {
+		auth.Use(deps.AgentRateLimiter)
+	}
 	auth.Post("/logout", deps.AuthHandler.Logout)
 
 	return app
@@ -71,4 +96,9 @@ func setupSwagger(app *fiber.App) {
 	)
 
 	app.All("/swaggor/*", adaptor.HTTPHandler(engine.Handler()))
+}
+
+// RequireRole returns a middleware that checks the agent_role local set by BearerAuthMiddleware.
+func RequireRole(roles ...string) fiber.Handler {
+	return middleware.RequireRole(roles...)
 }

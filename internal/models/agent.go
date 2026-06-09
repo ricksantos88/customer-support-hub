@@ -13,12 +13,18 @@ import (
 
 const bcryptCost = 10
 
+const (
+	AgentRoleAdmin = "admin"
+	AgentRoleAgent = "agent"
+)
+
 type Agent struct {
 	ID            uuid.UUID      `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 	Name          string         `gorm:"size:255;not null"`
 	Email         string         `gorm:"size:255;not null;uniqueIndex"`
 	PasswordHash  string         `gorm:"column:password_hash;not null"`
 	Password      string         `gorm:"-"`
+	Role          string         `gorm:"size:20;not null;default:agent"`
 	CreatedAt     time.Time      `gorm:"not null;autoCreateTime"`
 	LastActive    time.Time      `gorm:"not null;autoUpdateTime"`
 	Conversations []Conversation `gorm:"foreignKey:AssignedAgentID"`
@@ -66,6 +72,13 @@ func (a *Agent) BeforeCreate(_ *gorm.DB) error {
 	// If no plaintext Password was provided, PasswordHash must already be set.
 	if strings.TrimSpace(a.PasswordHash) == "" {
 		return fmt.Errorf("password is required")
+	}
+
+	if a.Role == "" {
+		a.Role = AgentRoleAgent
+	}
+	if a.Role != AgentRoleAdmin && a.Role != AgentRoleAgent {
+		return fmt.Errorf("invalid role: must be 'admin' or 'agent'")
 	}
 
 	return nil
