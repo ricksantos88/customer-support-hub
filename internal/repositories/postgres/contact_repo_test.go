@@ -3,6 +3,7 @@ package postgres_test
 import (
 	"context"
 	"errors"
+	"os"
 	"testing"
 	"time"
 
@@ -17,11 +18,52 @@ import (
 	postgresrepo "github.com/ricksantos88/customer-support-hub/internal/repositories/postgres"
 )
 
-func TestContactRepository_Create(t *testing.T) {
-	db, terminate := setupTestDB(t)
-	defer terminate()
+// sharedDB is the single database connection shared across all tests in this package.
+var sharedDB *gorm.DB
 
-	repo := postgresrepo.NewContactRepository(db)
+func TestMain(m *testing.M) {
+	ctx := context.Background()
+
+	container, err := pgcontainer.Run(ctx, "postgres:15-alpine",
+		pgcontainer.WithDatabase("customer_support_test"),
+		pgcontainer.WithUsername("support"),
+		pgcontainer.WithPassword("support123"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).
+				WithStartupTimeout(2*time.Minute),
+		),
+	)
+	if err != nil {
+		panic("failed to start postgres container: " + err.Error())
+	}
+	defer container.Terminate(ctx) //nolint:errcheck
+
+	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
+	if err != nil {
+		panic("failed to get connection string: " + err.Error())
+	}
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("failed to open gorm connection: " + err.Error())
+	}
+
+	if err := db.AutoMigrate(
+		&models.Contact{},
+		&models.Agent{},
+		&models.Conversation{},
+		&models.Message{},
+	); err != nil {
+		panic("failed to auto-migrate: " + err.Error())
+	}
+
+	sharedDB = db
+	os.Exit(m.Run())
+}
+
+func TestContactRepository_Create(t *testing.T) {
+	repo := postgresrepo.NewContactRepository(sharedDB)
 	ctx := context.Background()
 
 	contact := &models.Contact{Phone: "+5511999990001", Name: "Contato Teste"}
@@ -30,10 +72,7 @@ func TestContactRepository_Create(t *testing.T) {
 }
 
 func TestContactRepository_GetByPhone(t *testing.T) {
-	db, terminate := setupTestDB(t)
-	defer terminate()
-
-	repo := postgresrepo.NewContactRepository(db)
+	repo := postgresrepo.NewContactRepository(sharedDB)
 	ctx := context.Background()
 
 	contact := &models.Contact{Phone: "+5511999990002", Name: "Contato Consulta"}
@@ -46,10 +85,7 @@ func TestContactRepository_GetByPhone(t *testing.T) {
 }
 
 func TestContactRepository_SoftDelete(t *testing.T) {
-	db, terminate := setupTestDB(t)
-	defer terminate()
-
-	repo := postgresrepo.NewContactRepository(db)
+	repo := postgresrepo.NewContactRepository(sharedDB)
 	ctx := context.Background()
 
 	contact := &models.Contact{Phone: "+5511999990003", Name: "Contato Removido"}
@@ -59,33 +95,4 @@ func TestContactRepository_SoftDelete(t *testing.T) {
 	_, err := repo.GetByPhone(ctx, "+5511999990003")
 	require.Error(t, err)
 	require.True(t, errors.Is(err, gorm.ErrRecordNotFound))
-}
-
-func setupTestDB(t *testing.T) (*gorm.DB, func()) {
-	t.Helper()
-
-	ctx := context.Background()
-	container, err := pgcontainer.Run(ctx, "postgres:15-alpine",
-		pgcontainer.WithDatabase("customer_support_test"),
-		pgcontainer.WithUsername("support"),
-		pgcontainer.WithPassword("support123"),
-		testcontainers.WithWaitStrategy(
-			wait.ForListeningPort("5432/tcp").WithStartupTimeout(2*time.Minute),
-		),
-	)
-	require.NoError(t, err)
-
-	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
-	require.NoError(t, err)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	require.NoError(t, err)
-
-	require.NoError(t, db.AutoMigrate(&models.Contact{}, &models.Agent{}, &models.Conversation{}, &models.Message{}))
-
-	cleanup := func() {
-		_ = container.Terminate(ctx)
-	}
-
-	return db, cleanup
 }

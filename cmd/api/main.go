@@ -53,8 +53,11 @@ func main() {
 	authMiddleware := middleware.NewBearerAuthMiddleware(cfg.JWTSecret, sessionRepo)
 
 	app := httpiface.NewRouter(httpiface.RouterDependencies{
-		AuthHandler:    authHandler,
-		AuthMiddleware: authMiddleware,
+		AuthHandler:        authHandler,
+		AuthMiddleware:     authMiddleware,
+		IPRateLimiter:      middleware.NewIPRateLimiter(cfg.AuthRateLimitPerMinute),
+		AgentRateLimiter:   middleware.NewAgentRateLimiter(cfg.AuthRateLimitPerMinute),
+		CORSAllowedOrigins: cfg.CORSAllowedOrigins,
 	})
 	addr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 
