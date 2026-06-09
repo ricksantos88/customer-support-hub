@@ -18,12 +18,12 @@ import (
 )
 
 type sessionCacheStub struct {
-	setSessionFn                        func(context.Context, *models.Session, time.Duration) error
-	getSessionByIDFn                    func(context.Context, uuid.UUID) (*models.Session, error)
-	deleteSessionFn                     func(context.Context, uuid.UUID) error
-	setRefreshTokenSessionIDFn          func(context.Context, string, uuid.UUID, time.Duration) error
-	getSessionIDByRefreshTokenHashFn    func(context.Context, string) (uuid.UUID, error)
-	deleteRefreshTokenSessionIDFn       func(context.Context, string) error
+	setSessionFn                     func(context.Context, *models.Session, time.Duration) error
+	getSessionByIDFn                 func(context.Context, uuid.UUID) (*models.Session, error)
+	deleteSessionFn                  func(context.Context, uuid.UUID) error
+	setRefreshTokenSessionIDFn       func(context.Context, string, uuid.UUID, time.Duration) error
+	getSessionIDByRefreshTokenHashFn func(context.Context, string) (uuid.UUID, error)
+	deleteRefreshTokenSessionIDFn    func(context.Context, string) error
 }
 
 func (s *sessionCacheStub) SetSession(ctx context.Context, session *models.Session, ttl time.Duration) error {
