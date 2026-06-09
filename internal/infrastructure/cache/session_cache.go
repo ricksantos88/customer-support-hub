@@ -60,6 +60,13 @@ func (s *SessionCache) SetRefreshTokenSessionID(ctx context.Context, refreshToke
 	return s.client.Set(ctx, refreshTokenKey(refreshTokenHash), sessionID.String(), ttl).Err()
 }
 
+func (s *SessionCache) DeleteRefreshTokenSessionID(ctx context.Context, refreshTokenHash string) error {
+	if s == nil || s.client == nil {
+		return fmt.Errorf("redis unavailable")
+	}
+	return s.client.Del(ctx, refreshTokenKey(refreshTokenHash)).Err()
+}
+
 func (s *SessionCache) GetSessionIDByRefreshTokenHash(ctx context.Context, refreshTokenHash string) (uuid.UUID, error) {
 	if s == nil || s.client == nil {
 		return uuid.Nil, fmt.Errorf("redis unavailable")

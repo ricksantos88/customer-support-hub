@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -34,9 +34,10 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "email and password are required"})
 	}
 
-	result, err := h.service.Login(context.Background(), req.Email, req.Password, c.Get("User-Agent"), c.IP())
+	result, err := h.service.Login(c.Context(), req.Email, req.Password, c.Get("User-Agent"), c.IP())
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+		slog.Error("login failed", "err", err)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid credentials"})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.AuthResponse{
@@ -61,9 +62,10 @@ func (h *AuthHandler) Refresh(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "refresh_token is required"})
 	}
 
-	result, err := h.service.Refresh(context.Background(), req.RefreshToken, c.Get("User-Agent"), c.IP())
+	result, err := h.service.Refresh(c.Context(), req.RefreshToken, c.Get("User-Agent"), c.IP())
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+		slog.Error("refresh failed", "err", err)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid refresh token"})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.AuthResponse{
@@ -88,8 +90,9 @@ func (h *AuthHandler) Logout(c fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": fmt.Sprintf("invalid session_id: %v", err)})
 	}
 
-	if err := h.service.Logout(context.Background(), sessionID); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	if err := h.service.Logout(c.Context(), sessionID); err != nil {
+		slog.Error("logout failed", "err", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "logout failed"})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dto.StatusResponse{Status: "logged_out"})

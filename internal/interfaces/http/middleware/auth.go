@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -66,7 +65,7 @@ func (m *BearerAuthMiddleware) Handle(c fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid session_id claim"})
 	}
 
-	session, err := m.session.GetActiveByID(context.Background(), sessionID)
+	session, err := m.session.GetActiveByID(c.Context(), sessionID)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "session is not active"})
 	}
