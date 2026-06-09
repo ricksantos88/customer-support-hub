@@ -18,11 +18,12 @@ import (
 )
 
 type sessionCacheStub struct {
-	setSessionFn                     func(context.Context, *models.Session, time.Duration) error
-	getSessionByIDFn                 func(context.Context, uuid.UUID) (*models.Session, error)
-	deleteSessionFn                  func(context.Context, uuid.UUID) error
-	setRefreshTokenSessionIDFn       func(context.Context, string, uuid.UUID, time.Duration) error
-	getSessionIDByRefreshTokenHashFn func(context.Context, string) (uuid.UUID, error)
+	setSessionFn                        func(context.Context, *models.Session, time.Duration) error
+	getSessionByIDFn                    func(context.Context, uuid.UUID) (*models.Session, error)
+	deleteSessionFn                     func(context.Context, uuid.UUID) error
+	setRefreshTokenSessionIDFn          func(context.Context, string, uuid.UUID, time.Duration) error
+	getSessionIDByRefreshTokenHashFn    func(context.Context, string) (uuid.UUID, error)
+	deleteRefreshTokenSessionIDFn       func(context.Context, string) error
 }
 
 func (s *sessionCacheStub) SetSession(ctx context.Context, session *models.Session, ttl time.Duration) error {
@@ -58,6 +59,13 @@ func (s *sessionCacheStub) GetSessionIDByRefreshTokenHash(ctx context.Context, r
 		return s.getSessionIDByRefreshTokenHashFn(ctx, refreshTokenHash)
 	}
 	return uuid.Nil, errors.New("cache miss")
+}
+
+func (s *sessionCacheStub) DeleteRefreshTokenSessionID(ctx context.Context, refreshTokenHash string) error {
+	if s.deleteRefreshTokenSessionIDFn != nil {
+		return s.deleteRefreshTokenSessionIDFn(ctx, refreshTokenHash)
+	}
+	return nil
 }
 
 func TestService_Login(t *testing.T) {

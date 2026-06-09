@@ -28,6 +28,7 @@ type SessionCache interface {
 	DeleteSession(ctx context.Context, id uuid.UUID) error
 	SetRefreshTokenSessionID(ctx context.Context, refreshTokenHash string, sessionID uuid.UUID, ttl time.Duration) error
 	GetSessionIDByRefreshTokenHash(ctx context.Context, refreshTokenHash string) (uuid.UUID, error)
+	DeleteRefreshTokenSessionID(ctx context.Context, refreshTokenHash string) error
 }
 
 type Service struct {
@@ -134,7 +135,9 @@ func (s *Service) Refresh(ctx context.Context, refreshToken, userAgent, ipAddres
 
 	if s.cache != nil {
 		if sessionID, cacheErr := s.cache.GetSessionIDByRefreshTokenHash(ctx, refreshTokenHash); cacheErr == nil && sessionID != uuid.Nil {
-			session, err = s.sessions.GetActiveByID(ctx, sessionID)
+			if cached, cacheErr := s.sessions.GetActiveByID(ctx, sessionID); cacheErr == nil && cached.RefreshTokenHash == refreshTokenHash {
+				session = cached
+			}
 		}
 	}
 
@@ -164,12 +167,13 @@ func (s *Service) Refresh(ctx context.Context, refreshToken, userAgent, ipAddres
 			ID:               session.ID,
 			AgentID:          session.AgentID,
 			RefreshTokenHash: newHash,
-			UserAgent:        strings.TrimSpace(userAgent),
-			IPAddress:        strings.TrimSpace(ipAddress),
+			UserAgent:        session.UserAgent,
+			IPAddress:        session.IPAddress,
 			CreatedAt:        session.CreatedAt,
 			LastUsedAt:       now,
 			ExpiresAt:        newExpiresAt,
 		}
+		_ = s.cache.DeleteRefreshTokenSessionID(ctx, refreshTokenHash)
 		_ = s.cache.SetSession(ctx, updatedSession, s.sessionTTL)
 		_ = s.cache.SetRefreshTokenSessionID(ctx, newHash, session.ID, s.sessionTTL)
 	}
