@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"os"
 	"time"
 
+	"github.com/ricksantos88/customer-support-hub/internal/application/admin"
 	"github.com/ricksantos88/customer-support-hub/internal/application/auth"
 	"github.com/ricksantos88/customer-support-hub/internal/config"
 	"github.com/ricksantos88/customer-support-hub/internal/database"
@@ -52,8 +54,32 @@ func main() {
 	authHandler := handlers.NewAuthHandler(authService)
 	authMiddleware := middleware.NewBearerAuthMiddleware(cfg.JWTSecret, sessionRepo)
 
+	dbPing := func(ctx context.Context) error {
+		sqlDB, err := dbConn.DB()
+		if err != nil {
+			return err
+		}
+		return sqlDB.PingContext(ctx)
+	}
+
+	whatsAppConfigCheck := func() bool {
+		return os.Getenv("WHATSAPP_ACCESS_TOKEN") != "" &&
+			os.Getenv("WHATSAPP_PHONE_NUMBER_ID") != "" &&
+			os.Getenv("WHATSAPP_BUSINESS_ACCOUNT_ID") != ""
+	}
+
+	adminService := admin.NewService(
+		agentRepo,
+		sessionRepo,
+		sessionCache,
+		dbPing,
+		whatsAppConfigCheck,
+	)
+	adminHandler := handlers.NewAdminHandler(adminService)
+
 	app := httpiface.NewRouter(httpiface.RouterDependencies{
 		AuthHandler:        authHandler,
+		AdminHandler:       adminHandler,
 		AuthMiddleware:     authMiddleware,
 		IPRateLimiter:      middleware.NewIPRateLimiter(cfg.AuthRateLimitPerMinute),
 		AgentRateLimiter:   middleware.NewAgentRateLimiter(cfg.AuthRateLimitPerMinute),

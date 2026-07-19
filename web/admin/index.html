@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support Hub - Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Login Area -->
+    <div id="login-area" class="fullscreen-container">
+        <div class="login-card">
+            <div class="logo-mark">CSH</div>
+            <h2>Admin Console</h2>
+            <p class="subtitle">Faça login com sua conta de Administrador</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="login-email">E-mail</label>
+                    <input type="email" id="login-email" required placeholder="admin@example.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Senha</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="login-btn" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Area -->
+    <div id="dashboard-area" class="dashboard-container hidden">
+        <!-- Top Navigation -->
+        <header class="topbar">
+            <div class="brand">
+                <div class="logo-mark">CSH</div>
+                <div>
+                    <h1>Customer Support Hub</h1>
+                    <span class="badge">Painel de Administração</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <span id="user-info">Administrador</span>
+                <button id="logout-btn" class="btn btn-secondary">Sair</button>
+            </div>
+        </header>
+
+        <!-- System Diagnostic and Metrics Cards -->
+        <section class="metrics-grid">
+            <!-- DB Card -->
+            <div class="card status-card">
+                <h3>Banco de Dados</h3>
+                <div class="status-indicator">
+                    <span id="status-db-dot" class="dot dot-yellow"></span>
+                    <span id="status-db-text">Carregando...</span>
+                </div>
+            </div>
+            <!-- Redis Card -->
+            <div class="card status-card">
+                <h3>Redis Cache</h3>
+                <div class="status-indicator">
+                    <span id="status-redis-dot" class="dot dot-yellow"></span>
+                    <span id="status-redis-text">Carregando...</span>
+                </div>
+            </div>
+            <!-- WhatsApp Card -->
+            <div class="card status-card">
+                <h3>Integração WhatsApp</h3>
+                <div class="status-indicator">
+                    <span id="status-wa-dot" class="dot dot-yellow"></span>
+                    <span id="status-wa-text">Carregando...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Agents Section -->
+            <section class="panel-section">
+                <div class="section-header">
+                    <h2>Gestão de Agentes</h2>
+                    <button id="btn-open-create" class="btn btn-primary">+ Novo Agente</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Role</th>
+                                <th>Último Acesso</th>
+                                <th class="text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agents-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button id="btn-prev-page" class="btn btn-secondary">Anterior</button>
+                    <span id="page-indicator">Página 1</span>
+                    <button id="btn-next-page" class="btn btn-secondary">Próxima</button>
+                </div>
+            </section>
+
+            <!-- Sessions Section -->
+            <section class="panel-section">
+                <div class="section-header">
+                    <h2>Sessões Ativas</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Agente</th>
+                                <th>IP</th>
+                                <th>Dispositivo / User Agent</th>
+                                <th>Expiração</th>
+                                <th class="text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Create Agent Modal -->
+    <div id="modal-create" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Novo Agente</h3>
+                <span class="modal-close" onclick="closeModal('modal-create')">&times;</span>
+            </div>
+            <form id="create-agent-form">
+                <div class="input-group">
+                    <label for="create-name">Nome</label>
+                    <input type="text" id="create-name" required placeholder="Carlos Souza">
+                </div>
+                <div class="input-group">
+                    <label for="create-email">E-mail</label>
+                    <input type="email" id="create-email" required placeholder="carlos@example.com">
+                </div>
+                <div class="input-group">
+                    <label for="create-password">Senha</label>
+                    <input type="password" id="create-password" required placeholder="Senha de acesso">
+                </div>
+                <div class="input-group">
+                    <label for="create-role">Função / Role</label>
+                    <select id="create-role">
+                        <option value="agent">Agente (Suporte)</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-create')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Agent Modal -->
+    <div id="modal-edit" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Editar Agente</h3>
+                <span class="modal-close" onclick="closeModal('modal-edit')">&times;</span>
+            </div>
+            <form id="edit-agent-form">
+                <input type="hidden" id="edit-id">
+                <div class="input-group">
+                    <label for="edit-name">Nome</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit-email">E-mail</label>
+                    <input type="email" id="edit-email" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit-password">Nova Senha (deixe em branco para manter a atual)</label>
+                    <input type="password" id="edit-password" placeholder="Digite uma nova senha">
+                </div>
+                <div class="input-group">
+                    <label for="edit-role">Função / Role</label>
+                    <select id="edit-role">
+                        <option value="agent">Agente (Suporte)</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

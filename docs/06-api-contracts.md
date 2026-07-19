@@ -116,5 +116,43 @@ Response:
 - Refresh tokens are opaque and rotated on every refresh.
 - Sessions are validated against PostgreSQL.
 - Redis is used as a cache layer and may be unavailable without blocking auth flows.
+- Endpoints under `/admin` require a JWT containing the claim `"agent_role": "admin"`. Agents with `agent` role will receive HTTP 403 Forbidden.
+
+---
+
+## Admin Endpoints
+
+All admin endpoints are prefixed with `/admin` and require standard JWT authentication in the `Authorization: Bearer <token>` header.
+
+### POST /admin/agents
+Creates a new agent.
+* **Request**:
+```json
+{
+  "name": "Carlos",
+  "email": "carlos@test.com",
+  "password": "password123",
+  "role": "agent"
+}
+```
+* **Response (201 Created)**: Agent details.
+
+### GET /admin/agents
+Lists registered agents. Supports `limit` and `offset` query parameters.
+
+### PUT /admin/agents/:id
+Updates agent details. Cannot demote self.
+
+### DELETE /admin/agents/:id
+Inactivates (soft deletes) an agent, revoking all of their active sessions. Cannot delete self.
+
+### GET /admin/sessions
+Lists all active agent sessions in the system.
+
+### DELETE /admin/sessions/:id
+Revokes an active session immediately, logging out the target agent.
+
+### GET /admin/status
+Returns health check status for database, redis, and WhatsApp Meta Cloud configuration.
 
 ---

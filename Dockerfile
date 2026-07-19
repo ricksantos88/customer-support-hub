@@ -13,6 +13,7 @@ RUN adduser -D -u 10001 appuser
 WORKDIR /app
 COPY --from=builder /bin/customer-support-hub /usr/local/bin/customer-support-hub
 COPY .env.example ./.env.example
+COPY --from=builder /app/web ./web
 USER appuser
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/customer-support-hub"]

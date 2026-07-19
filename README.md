@@ -46,6 +46,12 @@ Para parar:
 make docker-down
 ```
 
+## Painéis e Interface Web
+
+*   **Painel Administrativo**: Disponível em [http://localhost:8080/admin-panel/](http://localhost:8080/admin-panel/)
+    *   *Nota*: Permite gerenciar agentes (criar/editar/desativar), visualizar sessões ativas e status de conexão da infraestrutura.
+*   **Documentação Swagger (Swaggor)**: Disponível em [http://localhost:8080/swaggor/](http://localhost:8080/swaggor/)
+
 ## Comandos úteis
 
 ```bash

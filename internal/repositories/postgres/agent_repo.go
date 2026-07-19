@@ -64,3 +64,18 @@ func (r *AgentRepository) UpdateLastActive(ctx context.Context, agentID uuid.UUI
 	}
 	return nil
 }
+
+func (r *AgentRepository) List(ctx context.Context, limit, offset int) ([]models.Agent, error) {
+	var agents []models.Agent
+	if err := r.db.WithContext(ctx).Limit(limit).Offset(offset).Order("created_at desc").Find(&agents).Error; err != nil {
+		return nil, fmt.Errorf("list agents: %w", err)
+	}
+	return agents, nil
+}
+
+func (r *AgentRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	if err := r.db.WithContext(ctx).Delete(&models.Agent{}, "id = ?", id).Error; err != nil {
+		return fmt.Errorf("delete agent: %w", err)
+	}
+	return nil
+}

@@ -26,8 +26,13 @@ Columns:
 - `name`
 - `email` (unique)
 - `password_hash` (bcrypt hash of agent credential)
+- `role` (varchar(20), restricted to 'admin' or 'agent')
 - `created_at`
 - `last_active`
+- `deleted_at` (soft delete)
+
+Indexes:
+- `idx_agents_deleted_at` on `deleted_at`
 
 ## auth_sessions
 

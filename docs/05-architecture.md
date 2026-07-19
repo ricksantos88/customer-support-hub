@@ -18,6 +18,7 @@ internal/
     agent/
 
   application/
+    admin/
     send_message/
     receive_message/
     assign_conversation/

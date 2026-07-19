@@ -52,3 +52,16 @@ func (m *SessionRepositoryMock) Revoke(ctx context.Context, sessionID uuid.UUID,
 	args := m.Called(ctx, sessionID, revokedAt)
 	return args.Error(0)
 }
+
+func (m *SessionRepositoryMock) ListActive(ctx context.Context) ([]models.Session, error) {
+	args := m.Called(ctx)
+	if sessions, ok := args.Get(0).([]models.Session); ok {
+		return sessions, args.Error(1)
+	}
+	return nil, args.Error(1)
+}
+
+func (m *SessionRepositoryMock) RevokeAllByAgentID(ctx context.Context, agentID uuid.UUID, revokedAt time.Time) error {
+	args := m.Called(ctx, agentID, revokedAt)
+	return args.Error(0)
+}
