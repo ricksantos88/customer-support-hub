@@ -27,6 +27,7 @@ type Agent struct {
 	Role          string         `gorm:"size:20;not null;default:agent"`
 	CreatedAt     time.Time      `gorm:"not null;autoCreateTime"`
 	LastActive    time.Time      `gorm:"not null;autoUpdateTime"`
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 	Conversations []Conversation `gorm:"foreignKey:AssignedAgentID"`
 }
 

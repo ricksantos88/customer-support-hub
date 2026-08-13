@@ -89,3 +89,29 @@ func (r *SessionRepository) Revoke(ctx context.Context, sessionID uuid.UUID, rev
 	}
 	return nil
 }
+
+func (r *SessionRepository) ListActive(ctx context.Context) ([]models.Session, error) {
+	var sessions []models.Session
+	if err := r.db.WithContext(ctx).
+		Preload("Agent").
+		Where("revoked_at IS NULL AND expires_at > ?", time.Now().UTC()).
+		Order("created_at desc").
+		Find(&sessions).Error; err != nil {
+		return nil, fmt.Errorf("list active sessions: %w", err)
+	}
+	return sessions, nil
+}
+
+func (r *SessionRepository) RevokeAllByAgentID(ctx context.Context, agentID uuid.UUID, revokedAt time.Time) error {
+	result := r.db.WithContext(ctx).
+		Model(&models.Session{}).
+		Where("agent_id = ? AND revoked_at IS NULL", agentID).
+		Updates(map[string]interface{}{
+			"revoked_at":   revokedAt.UTC(),
+			"last_used_at": revokedAt.UTC(),
+		})
+	if result.Error != nil {
+		return fmt.Errorf("revoke all sessions for agent: %w", result.Error)
+	}
+	return nil
+}

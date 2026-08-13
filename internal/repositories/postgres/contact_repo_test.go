@@ -54,6 +54,7 @@ func TestMain(m *testing.M) {
 		&models.Agent{},
 		&models.Conversation{},
 		&models.Message{},
+		&models.Session{},
 	); err != nil {
 		panic("failed to auto-migrate: " + err.Error())
 	}

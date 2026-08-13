@@ -14,6 +14,8 @@ type AgentRepository interface {
 	GetByEmail(ctx context.Context, email string) (*models.Agent, error)
 	Update(ctx context.Context, agent *models.Agent) error
 	UpdateLastActive(ctx context.Context, agentID uuid.UUID, lastActive time.Time) error
+	List(ctx context.Context, limit, offset int) ([]models.Agent, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type SessionRepository interface {
@@ -23,6 +25,8 @@ type SessionRepository interface {
 	GetActiveByID(ctx context.Context, id uuid.UUID) (*models.Session, error)
 	RotateRefreshToken(ctx context.Context, sessionID uuid.UUID, refreshTokenHash string, lastUsedAt, expiresAt time.Time) error
 	Revoke(ctx context.Context, sessionID uuid.UUID, revokedAt time.Time) error
+	ListActive(ctx context.Context) ([]models.Session, error)
+	RevokeAllByAgentID(ctx context.Context, agentID uuid.UUID, revokedAt time.Time) error
 }
 
 type ContactRepository interface {
